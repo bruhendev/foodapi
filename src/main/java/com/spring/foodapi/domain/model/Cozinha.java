@@ -1,7 +1,5 @@
 package com.spring.foodapi.domain.model;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,10 +24,5 @@ public class Cozinha {
 
     @Column(nullable = false)
     private String nome;
-
-    @Column(name = "taxa_frete", nullable = false)
-    private BigDecimal taxaFrete;
-
-    
 
 }

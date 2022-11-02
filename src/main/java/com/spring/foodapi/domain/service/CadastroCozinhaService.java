@@ -14,20 +14,20 @@ import com.spring.foodapi.domain.repository.CozinhaRepository;
 public class CadastroCozinhaService {
 
     @Autowired
-    private CozinhaRepository Cozinharepository;
+    private CozinhaRepository cozinharepository;
 
     public Cozinha salvar(Cozinha cozinha) {
-        return Cozinharepository.save(cozinha);
+        return cozinharepository.save(cozinha);
     }
 
     public void excluir(Long id) {
         try {
-            Cozinharepository.deleteById(id);
+            cozinharepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new EntidadeNaoEncontradaException("Entidade não encontrada");
         }
         catch (DataIntegrityViolationException e) {
-            throw new EntidadeEmUsoException("Cozinha não pode ser removida");
+            throw new EntidadeEmUsoException("Entidade não pode ser removida");
         }
     }
 }
