@@ -60,6 +60,37 @@ public class CadastroRestauranteService {
             throw new EntidadeNaoEncontradaException(
                     String.format("Não existe cadastro de cozinha com código %d", cozinhaId));
         }
+    }
+
+    public Restaurante atualizar(Restaurante restaurante, Long restauranteId) {
+
+        Long cozinhaId = restaurante.getCozinha().getId();
+        Restaurante restauranteAtual = new Restaurante();
+        try {
+            restauranteAtual = restauranteRepository.findById(restauranteId).get();
+        } catch (NoSuchElementException e) {
+            throw new EntidadeNaoEncontradaException("Entidade restaurante com id "+ restauranteId +" não encotrada");
+        }
+
+        
+        try {
+            
+            Cozinha cozinha = cozinhaRepository.findById(cozinhaId).get();
+
+            restauranteAtual.setCozinha(cozinha);
+
+            if (restaurante.getNome() != null && !restaurante.getNome().trim().isEmpty()) {
+                restauranteAtual.setNome(restaurante.getNome());
+            }
+
+            if (restaurante.getTaxaFrete() != null) {
+                restauranteAtual.setTaxaFrete(restaurante.getTaxaFrete());
+            }
+
+            return restauranteRepository.save(restauranteAtual);
+        } catch (NoSuchElementException e) {
+            throw new EntidadeNaoEncontradaException("Entidade cozinha com id "+ cozinhaId +" não encotrada");
+        }
 
     }
 
