@@ -30,4 +30,6 @@ public class CadastroCozinhaService {
             throw new EntidadeEmUsoException("Entidade não pode ser removida");
         }
     }
+
+    
 }
