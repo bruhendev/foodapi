@@ -10,5 +10,5 @@ import com.spring.foodapi.domain.model.Cozinha;
 @Repository
 public interface CozinhaRepository extends JpaRepository<Cozinha, Long> {
 
-    List<Cozinha> cozinhasPorNome(String nome);
+    List<Cozinha> findBynomeContaining(String nome);
 }

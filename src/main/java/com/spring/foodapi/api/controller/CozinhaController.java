@@ -60,7 +60,7 @@ public class CozinhaController {
 
     @GetMapping("/por-nome")
     public ResponseEntity<?> buscarPorNome(@RequestParam(name = "nome") String nome ) {
-        return null;
+        return ResponseEntity.ok(cozinhaRepository.findBynomeContaining(nome));
     }
 
     @PostMapping

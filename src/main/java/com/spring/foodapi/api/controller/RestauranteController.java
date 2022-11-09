@@ -1,5 +1,7 @@
 package com.spring.foodapi.api.controller;
+
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.foodapi.domain.exception.EntidadeNaoEncontradaException;
 import com.spring.foodapi.domain.model.Restaurante;
+import com.spring.foodapi.domain.repository.RestauranteRepository;
 import com.spring.foodapi.domain.service.CadastroRestauranteService;
 
 @RestController
@@ -29,6 +32,9 @@ public class RestauranteController {
 
     @Autowired
     private CadastroRestauranteService cadastroRestaurante;
+
+    @Autowired
+    private RestauranteRepository restauranteRepository;
 
     @GetMapping
     public ResponseEntity<List<Restaurante>> listar() {
@@ -84,7 +90,7 @@ public class RestauranteController {
     @PatchMapping("/{restauranteId}")
     public ResponseEntity<?> atualizarParcial(@PathVariable("restauranteId") Long restaurnateId,
             @RequestBody Map<String, Object> campos) {
-        
+
         Restaurante restauranteAtual = cadastroRestaurante.buscar(restaurnateId);
 
         merge(campos, restauranteAtual);
@@ -92,19 +98,37 @@ public class RestauranteController {
         return atualizar(restauranteAtual, restaurnateId);
     }
 
-    private void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino){
+    private void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino) {
         ObjectMapper objectMapper = new ObjectMapper();
         Restaurante restauranteOrigem = objectMapper.convertValue(dadosOrigem, Restaurante.class);
 
         dadosOrigem.forEach((nomePropriedade, valorPropriedade) -> {
             Field field = ReflectionUtils.findField(Restaurante.class, nomePropriedade);
-            if(field != null)
+            if (field != null)
                 field.setAccessible(true);
 
             Object novoValor = ReflectionUtils.getField(field, restauranteOrigem);
 
             ReflectionUtils.setField(field, restauranteDestino, novoValor);
         });
+    }
+
+    @GetMapping("/por-taxa-frete")
+    private ResponseEntity<List<Restaurante>> restaurantesPorTaxaFrete(BigDecimal taxaInicial, BigDecimal taxaFinal) {
+        return ResponseEntity.ok(restauranteRepository.taxaFreteBetween(taxaInicial, taxaFinal));
+    }
+
+    @GetMapping("/por-nome")
+    private ResponseEntity<List<Restaurante>> porNome(String nome, Long restaurante) {
+
+        System.out.println("---------" + nome + "----------" + restaurante);
+        return ResponseEntity.ok(restauranteRepository.consultarPorNome(nome, restaurante));
+    }
+
+    @GetMapping("/por-nome-e-frete")
+    private ResponseEntity<List<Restaurante>> restaurantesPorNomeFrete(String nome, BigDecimal taxaFreteInicial,
+            BigDecimal taxaFreteFinal) {
+        return ResponseEntity.ok(restauranteRepository.find(nome, taxaFreteInicial, taxaFreteFinal));
     }
 
 }
