@@ -26,6 +26,7 @@ import com.spring.foodapi.domain.model.Restaurante;
 import com.spring.foodapi.domain.repository.RestauranteRepository;
 import com.spring.foodapi.domain.service.CadastroRestauranteService;
 
+
 @RestController
 @RequestMapping("/restaurantes")
 public class RestauranteController {
@@ -129,6 +130,12 @@ public class RestauranteController {
     private ResponseEntity<List<Restaurante>> restaurantesPorNomeFrete(String nome, BigDecimal taxaFreteInicial,
             BigDecimal taxaFreteFinal) {
         return ResponseEntity.ok(restauranteRepository.find(nome, taxaFreteInicial, taxaFreteFinal));
+    }
+
+    @GetMapping("/com-frete-gratis")
+    private ResponseEntity<List<Restaurante>> restaurantesComFreteGratis(String nome) {
+        
+        return ResponseEntity.ok(restauranteRepository.findComFreteGratis(nome));
     }
 
 }
